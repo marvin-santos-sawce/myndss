@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mynds</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+
+<body>
+
+  <!-- CANVAS 3D -->
+  <canvas id="brain-canvas"></canvas>
+
+  <!-- HUD OVERLAY -->
+  <div class="hud-ring" id="hud-ring"></div>
+  <div class="scan-line"></div>
+
+  <!-- ENTER BUTTON -->
+  <div class="enter-wrap">
+    <button class="enter-btn" onclick="goToPassword()">
+      <span class="btn-label">ACESSAR SISTEMA</span>
+      <span class="btn-sub"> </span>
+    </button>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-logo-text">MYNDS<sup>®</sup></span>
+    </div>
+  </footer>
+
+  <script src="js/brain.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

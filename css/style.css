@@ -1,0 +1,193 @@
+/* =============================================
+   MYNDS — Global Styles
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&display=swap');
+
+:root {
+  --pink:       #ff2d78;
+  --pink-dim:   #c41f58;
+  --pink-glow:  rgba(255, 45, 120, 0.35);
+  --pink-trace: rgba(255, 45, 120, 0.08);
+  --bg:         #000000;
+  --text:       #ffffff;
+  --text-dim:   rgba(255,255,255,0.45);
+  --font-display: 'Orbitron', monospace;
+  --font-mono:    'Share Tech Mono', monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  overflow: hidden;
+}
+
+/* ---- CANVAS ---- */
+#brain-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: none;
+}
+
+/* ---- SCAN LINE ANIMATION ---- */
+.scan-line {
+  position: fixed;
+  top: -4px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--pink-glow) 40%,
+    var(--pink) 50%,
+    var(--pink-glow) 60%,
+    transparent 100%
+  );
+  animation: scanDown 6s linear infinite;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.6;
+}
+
+@keyframes scanDown {
+  0%   { transform: translateY(0); opacity: 0; }
+  5%   { opacity: 1; }
+  95%  { opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+/* ---- HUD RING ---- */
+.hud-ring {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 45, 120, 0.15);
+  box-shadow:
+    0 0 0 1px rgba(255,45,120,0.05),
+    inset 0 0 80px rgba(255,45,120,0.04);
+  pointer-events: none;
+  z-index: 5;
+  animation: hudPulse 4s ease-in-out infinite;
+}
+
+.hud-ring::before,
+.hud-ring::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255,45,120,0.08);
+}
+.hud-ring::before {
+  inset: -28px;
+}
+.hud-ring::after {
+  inset: -56px;
+}
+
+@keyframes hudPulse {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1; }
+}
+
+/* ---- ENTER BUTTON ---- */
+.enter-wrap {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  text-align: center;
+}
+
+.enter-btn {
+  background: transparent;
+  border: 1px solid var(--pink);
+  color: var(--pink);
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  padding: 14px 36px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.enter-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--pink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+  z-index: -1;
+}
+
+.enter-btn:hover::before { transform: scaleX(1); }
+.enter-btn:hover { color: #000; box-shadow: 0 0 24px var(--pink-glow); }
+
+.btn-label { font-size: 11px; letter-spacing: 0.25em; }
+.btn-sub   { font-size: 9px; letter-spacing: 0.15em; opacity: 0.6; font-family: var(--font-mono); }
+
+/* ---- FOOTER ---- */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 56px;
+  background: rgba(0,0,0,0.85);
+  border-top: 1px solid rgba(255,45,120,0.2);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  z-index: 100;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  padding-right: 24px;
+}
+
+.footer-logo-text {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.7);
+}
+
+.footer-logo-text sup {
+  font-size: 8px;
+  vertical-align: super;
+  color: var(--pink);
+}
+
+/* ---- SCROLLBAR ---- */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: var(--pink-dim); border-radius: 2px; }
