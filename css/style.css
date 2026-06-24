@@ -191,3 +191,39 @@ html, body {
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: #000; }
 ::-webkit-scrollbar-thumb { background: var(--pink-dim); border-radius: 2px; }
+
+/* ---- CUSTOM CURSOR HIDE FOR LANDING PAGE ---- */
+body:not(.password-page),
+body:not(.password-page) * {
+  cursor: none !important;
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 480px) {
+  .hud-ring {
+    width: 280px;
+    height: 280px;
+  }
+  .hud-ring::before {
+    inset: -16px;
+  }
+  .hud-ring::after {
+    inset: -32px;
+  }
+  .enter-wrap {
+    bottom: 80px;
+  }
+  .enter-btn {
+    padding: 12px 28px;
+    font-size: 10px;
+  }
+  .footer {
+    height: 48px;
+  }
+  .footer-inner {
+    padding-right: 16px;
+  }
+  .footer-logo-text {
+    font-size: 11px;
+  }
+}

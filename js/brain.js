@@ -243,6 +243,13 @@
   brainGroup.add(scanRings);
   brainGroup.add(particles);
 
+  function updateBrainScale() {
+    const isMobile = window.innerWidth < 600;
+    const scale = isMobile ? 0.72 : 1.0;
+    brainGroup.scale.set(scale, scale, scale);
+  }
+  updateBrainScale();
+
   /* ---- LIGHTS ---- */
   const ambient = new THREE.AmbientLight(0xffffff, 0.3);
   scene.add(ambient);
@@ -259,26 +266,10 @@
   rimLight.position.set(0, 2.5, -2);
   scene.add(rimLight);
 
-  /* ---- MOUSE TRACKING ---- */
+  /* ---- MOUSE TRACKING & TOUCH ---- */
   const mouse     = { x: 0, y: 0 };
   const targetRot = { x: 0, y: 0 };
   const currentRot= { x: 0, y: 0 };
-
-  document.addEventListener('mousemove', (e) => {
-    mouse.x = (e.clientX / window.innerWidth  - 0.5) * 2;
-    mouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
-    targetRot.y =  mouse.x * 0.55;   // horizontal tilt
-    targetRot.x = -mouse.y * 0.38;   // vertical tilt
-  });
-
-  /* Touch support */
-  document.addEventListener('touchmove', (e) => {
-    const t = e.touches[0];
-    mouse.x = (t.clientX / window.innerWidth  - 0.5) * 2;
-    mouse.y = (t.clientY / window.innerHeight - 0.5) * 2;
-    targetRot.y =  mouse.x * 0.55;
-    targetRot.x = -mouse.y * 0.38;
-  }, { passive: true });
 
   /* ---- CUSTOM CURSOR ---- */
   const cursor = document.createElement('div');
@@ -287,7 +278,8 @@
     border:1px solid rgba(255,45,120,0.8); border-radius:50%;
     pointer-events:none; z-index:9999;
     transform:translate(-50%,-50%);
-    transition:width 0.15s, height 0.15s, opacity 0.15s;
+    transition:width 0.15s, height 0.15s, opacity 0.15s, background-color 0.15s;
+    opacity: 0;
   `;
   document.body.appendChild(cursor);
 
@@ -297,14 +289,97 @@
     background:rgba(255,45,120,0.9); border-radius:50%;
     pointer-events:none; z-index:9999;
     transform:translate(-50%,-50%);
+    transition:opacity 0.15s;
+    opacity: 0;
   `;
   document.body.appendChild(cursorTrail);
 
   let cx = 0, cy = 0, tx = 0, ty = 0;
+  let hasMoved = false;
+
+  function showCursor() {
+    cursor.style.opacity = '1';
+    cursorTrail.style.opacity = '1';
+  }
+
+  function hideCursor() {
+    cursor.style.opacity = '0';
+    cursorTrail.style.opacity = '0';
+  }
+
   document.addEventListener('mousemove', (e) => {
-    tx = e.clientX; ty = e.clientY;
+    mouse.x = (e.clientX / window.innerWidth  - 0.5) * 2;
+    mouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
+    targetRot.y =  mouse.x * 0.55;
+    targetRot.x = -mouse.y * 0.38;
+
+    tx = e.clientX;
+    ty = e.clientY;
+    if (!hasMoved) {
+      hasMoved = true;
+      cx = tx;
+      cy = ty;
+      showCursor();
+    }
     cursor.style.left = tx + 'px';
     cursor.style.top  = ty + 'px';
+  });
+
+  document.addEventListener('mouseleave', () => {
+    hideCursor();
+    hasMoved = false;
+  });
+
+  document.addEventListener('mouseenter', () => {
+    hasMoved = false;
+  });
+
+  /* Touch support for 3D rotation and custom cursor */
+  document.addEventListener('touchstart', (e) => {
+    const t = e.touches[0];
+    tx = t.clientX;
+    ty = t.clientY;
+    cx = tx;
+    cy = ty;
+    showCursor();
+    cursor.style.left = tx + 'px';
+    cursor.style.top  = ty + 'px';
+  }, { passive: true });
+
+  document.addEventListener('touchmove', (e) => {
+    const t = e.touches[0];
+    mouse.x = (t.clientX / window.innerWidth  - 0.5) * 2;
+    mouse.y = (t.clientY / window.innerHeight - 0.5) * 2;
+    targetRot.y =  mouse.x * 0.55;
+    targetRot.x = -mouse.y * 0.38;
+
+    tx = t.clientX;
+    ty = t.clientY;
+    cursor.style.left = tx + 'px';
+    cursor.style.top  = ty + 'px';
+  }, { passive: true });
+
+  document.addEventListener('touchend', () => {
+    hideCursor();
+  }, { passive: true });
+
+  document.addEventListener('touchcancel', () => {
+    hideCursor();
+  }, { passive: true });
+
+  // Hover scale effect for interactive elements
+  const interactives = document.querySelectorAll('.enter-btn, button, a');
+  interactives.forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '24px';
+      cursor.style.height = '24px';
+      cursor.style.backgroundColor = 'rgba(255, 45, 120, 0.15)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '12px';
+      cursor.style.height = '12px';
+      cursor.style.backgroundColor = 'transparent';
+    });
   });
 
   /* ---- ANIMATE ---- */
@@ -354,6 +429,7 @@
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    updateBrainScale();
   });
 
 })();
